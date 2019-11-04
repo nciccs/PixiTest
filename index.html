@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <meta charset="utf-8">
+    <title>Test</title>
+    <style> body {padding: 0; margin: 0;} </style>
+    <script src="pixi.min.js"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+    let type = "WebGL"
+    if(!PIXI.utils.isWebGLSupported())
+    {
+        type = "canvas"
+    }
+
+    PIXI.utils.sayHello(type)
+
+    let app = new PIXI.Application({width: 640, height: 480, antialias: false});
+
+    document.body.appendChild(app.view);
+
+    app.renderer.backgroundColor = 0x061639;
+
+    var allSprites = [];
+
+    let numSprites = 24000;
+
+    PIXI.Loader.shared.add("ship", "spaceShip.png").load(setup);
+
+    function setup(loader, resources)
+    {
+        for(let i = 0; i < numSprites; i++)
+        {
+            let sprite = new PIXI.Sprite(resources.ship.texture);
+            let texture = resources.ship.texture;
+            let width = texture.width;
+            let height = texture.height;
+            //sprite.position.set(x, y)
+            sprite.anchor.set(0.5);
+            sprite.x = Math.random() * (app.renderer.view.width - width/2);
+            sprite.y = Math.random() * (app.renderer.view.height - height/2);
+            app.stage.addChild(sprite);
+            allSprites.push(sprite);
+        }
+    }
+
+    app.ticker.add((delta) => {
+        for(let i = 0; i < numSprites; i++)
+        {
+            if(allSprites[i])
+            {
+                allSprites[i].rotation += 0.1 * delta;
+            }
+        }
+    });
+    </script>
+  </body>
+</html>
