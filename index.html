@@ -5,9 +5,12 @@
     <title>Test</title>
     <style> body {padding: 0; margin: 0;} </style>
     <script src="pixi.min.js"></script>
+    <script src="Boid.js"></script>
+
   </head>
   <body>
     <script type="text/javascript">
+
     let type = "WebGL"
     if(!PIXI.utils.isWebGLSupported())
     {
@@ -24,25 +27,27 @@
 
     var allSprites = [];
 
-    let numSprites = 24000;
+    let numSprites = 22000;
 
-    PIXI.Loader.shared.add("ship", "spaceship.png").load(setup);
+    var boids = [];
 
-    function setup(loader, resources)
+    const texture = PIXI.Texture.from("spaceship.png");
+
+    for(let i = 0; i < numSprites; i++)
     {
-        for(let i = 0; i < numSprites; i++)
-        {
-            let sprite = new PIXI.Sprite(resources.ship.texture);
-            let texture = resources.ship.texture;
-            let width = texture.width;
-            let height = texture.height;
-            //sprite.position.set(x, y)
-            sprite.anchor.set(0.5);
-            sprite.x = Math.random() * (app.renderer.view.width - width/2);
-            sprite.y = Math.random() * (app.renderer.view.height - height/2);
-            app.stage.addChild(sprite);
-            allSprites.push(sprite);
-        }
+        let sprite = new PIXI.Sprite(texture);
+
+        let width = texture.width;
+        let height = texture.height;
+        //sprite.position.set(x, y)
+        sprite.anchor.set(0.5);
+        //sprite.x = Math.random() * (app.renderer.view.width - width/2);
+        //sprite.y = Math.random() * (app.renderer.view.height - height/2);
+        sprite.x = Math.random() * (app.renderer.view.width);
+        sprite.y = Math.random() * (app.renderer.view.height);
+
+        app.stage.addChild(sprite);
+        allSprites.push(sprite);
     }
 
     app.ticker.add((delta) => {
@@ -50,7 +55,15 @@
         {
             if(allSprites[i])
             {
-                allSprites[i].rotation += 0.1 * delta;
+                //allSprites[i].rotation += 0.1 * delta;
+                //boids[i].run(boids);
+                let newX = Math.random() * (app.renderer.view.width);
+                let newY = Math.random() * (app.renderer.view.height);
+
+                //allSprites[i].x += (newX / Math.abs(newX));
+                //allSprites[i].y += (newY / Math.abs(newY));
+                allSprites[i].x += ((newX-allSprites[i].x)/Math.abs(newX-allSprites[i].x));
+                allSprites[i].y += ((newY-allSprites[i].y)/Math.abs(newY-allSprites[i].y));
             }
         }
     });
